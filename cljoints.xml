@@ -1,0 +1,53 @@
+<mujoco model="cartpole">
+    <compiler coordinate="local" inertiafromgeom="true"/>
+    <custom>
+    <numeric data="2" name="frame_skip"/>
+    </custom>
+    <default>
+    <joint damping="0.05"/>
+    <geom contype="0" friction="0.1 0.1 1" rgba="0.7 0.7 0 1"/> # friction: 1st is sliding friction,x plane 2nd is torsional friction about the xy plane. 3rd is rolling, xz plane
+    </default>
+    <option gravity="1e-5 0 -9.81" integrator="RK4" timestep="0.01"/>
+    <size nstack="3000"/>
+    <worldbody>
+    <geom name="floor" pos="0 0 -3.0" rgba="0.8 0.9 0.8 1" size="40 40 40" type="plane"/>
+    <geom name="rail" pos="0 0 0" quat="0.707 0 0.707 0" rgba="0.3 0.3 0.7 1" size="0.02 1.5" type="capsule"/>
+    <body name="cart" pos="-.5 0 0">
+    <joint axis="1 0 0" limited="true" margin="0.01" name="slider" pos="0 0 0" range="0 1e-9" type="hinge"/>
+    <geom name="cart" pos="0 0 0" quat="0.707 0 0.707 0" size="0.1 0.1" type="capsule"/>
+    <body name="pole1" pos="0 0 0">
+    <joint axis="0 1 0" name="hinge" pos="0 0 0" type="hinge" /> # range is the range of movement
+    <geom fromto="0 0 0 -0.3 0 0.6" name="cpole1" rgba="0 0.7 0.7 1" size="0.045 0.3" type="capsule"/> # fromto is starting x,y,z to ending x,y,z specifing the length
+    <body name="pole2" pos="-0.3 0 0.6"> # the x defines the angle from the front view and the y defines the offset from the top view.
+    <joint axis="0 1 0" name="hinge2" pos="0 0 0" type="hinge" />
+    <geom fromto="0 0 0 0.6 0 0.6" name="cpole2" rgba="0 0.7 0.7 1" size="0.045 0.3" type="capsule" />
+    <site name="tip" pos="0.6 0 0.6" size="0.01 0.01"/>
+    </body>
+    </body>
+    </body>
+    <body name="cart2" pos=".5 0 0">
+    <joint axis="1 0 0" limited="true" margin="0.01" name="slider1" pos="0 0 0" range="0 1e-9" type="hinge"/>
+    <geom name="cart2" pos="0 0 0" quat="0.707 0 0.707 0" size="0.1 0.1" type="capsule"/>
+    <body name="pole3" pos="0 0 0">
+    <joint axis="0 1 0" name="hinge3" pos="0 0 0" type="hinge" />
+    <geom fromto="0 0 0 0.3 0 0.6" name="cpole3" rgba="0 0.7 0.7 1" size="0.045 0.3" type="capsule"/>
+    <body name="pole4" pos="0.3 0 0.6">
+    <joint axis="0 1 0" name="hinge4" pos="0 0 0" type="hinge" />
+    <geom fromto="0 0 0 -1 0 0.6" name="cpole4" rgba="0 0.7 0.7 1" size="0.045 0.3" type="capsule"/>
+    <!-- <site name="tip1" pos="-1 0 0.6" size="0.01 0.01"/> -->
+    </body>
+    </body>
+    </body>
+    </worldbody>
+    <equality>
+    <connect active= "true" body1 = "pole2" body2 = "pole4" anchor = "0.6 0 0.6"/> # initial anchor is with respect to 1st cart. X,Y,Z coordinates
+    <connect active= "true" body1 = "pole4" body2 = "pole2" anchor = "-1 0 0.6"/>
+    </equality>
+    <actuator>
+    <motor ctrllimited="true" ctrlrange="-1 1" gear="300" joint="hinge" name="pole_1"/>
+    <motor ctrllimited="true" ctrlrange="-1 1" gear="300" joint="hinge3" name="pole_2"/>
+    </actuator>
+    <contact>
+    <exclude body1 = "pole2" body2 = "pole4" />
+    </contact>
+</mujoco>

@@ -1,0 +1,25 @@
+<mujoco>
+	<option gravity="0 0 -9.81">
+		<flag sensornoise="enable" />
+	</option>
+	<worldbody>
+        <light diffuse=".5 .5 .5" pos="0 0 3" dir="0 0 -1"/>
+		<geom type="plane" size="2 2 0.1" rgba=".9 0 0 1"/>
+		<body pos="0 0 3" euler="0 270 0">
+			<joint name="pin" type="hinge" axis = "0 -1 0" pos="0 0 0.5"/>
+			<geom type="cylinder" size="0.005 0.5" rgba="1 1 1 1" mass="0"/>
+			<body pos="0 0 -0.5">
+				<geom type="sphere" size="0.1" mass="10"/>
+			</body>
+		</body>
+	</worldbody>
+	<actuator>
+		<motor joint="pin" name="servo" gear="0.9" ctrllimited="true" ctrlrange="-360 360" />
+		<position name="position_servo" joint="pin" kp="10" />
+		<velocity name="velocity_servo" joint="pin" kv="0" />	
+	</actuator>
+	<sensor>
+		<jointpos joint="pin" noise="0.2"/>
+		<jointvel joint="pin" noise="1" />
+	</sensor>
+</mujoco>
